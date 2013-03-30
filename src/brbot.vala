@@ -78,7 +78,7 @@ namespace brbot {
         }
 
         public static void main () {
-            var chan = "#test";
+            var chan = "#botwar";
             var nick = "brbot";
 
             var user = User () {
