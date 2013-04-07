@@ -96,8 +96,12 @@ namespace brbot {
             /* Something Handler */
             var sme = new SaySomething ();
             cmds.append (sme.get_cmd ());
-            var bot = new BrBot (server, cmds);
 
+            /* Memo Handler */
+            var memo = new Memo ();
+            cmds.append (memo.get_cmd ());
+
+            var bot = new BrBot (server, cmds);
             new MainLoop ().run ();
         }
     }

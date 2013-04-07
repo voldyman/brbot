@@ -58,7 +58,6 @@ namespace brbot {
             if (messages.has_key (nick)) {
                 Command cur_cmd = messages.get (nick);
                 if (channel == cur_cmd.channel) {
-                    print ("Same Channel\n\n");
                     server.notice (cur_cmd.to_nick, "Memo from:"+cur_cmd.from_nick+", "+cur_cmd.message);
                     messages.unset (nick);
                 }
@@ -67,7 +66,6 @@ namespace brbot {
 
         public void on_message_h (DoodleIRCServer server, string sender, string channel, string msg) {
             Command cur_cmd = parse_msg (msg, sender, channel);
-            print ("\n"+msg);
             server.notice (sender, "Memo saved");
             messages.set (sender, cur_cmd);
         }
@@ -77,7 +75,6 @@ namespace brbot {
             string[] message_parts = _msg.split ("|");
             string user_message = message_parts[0].strip ();
             string to_user_nick = message_parts [1].strip ();
-            print ("\n===\n%s\n%s\n%s".printf (user_message, to_user_nick, chan));
             return Command () {
                 message = user_message,
                 to_nick = to_user_nick,
