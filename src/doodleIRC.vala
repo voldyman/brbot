@@ -58,7 +58,7 @@ namespace doodleIRC {
 
             on_connect_complete.connect (() => {
                 to_send.foreach ((cmd) => {
-                    print ("Sending "+cmd);
+                    debug ("Sending "+cmd);
                     raw_send (cmd);
                     to_send.remove (cmd);
                 });
@@ -66,7 +66,7 @@ namespace doodleIRC {
         }
 
         ~DoodleIRCServer () {
-            print ("Exiting");
+            debug (("Exiting");
             quit_server ("Client Quit");
         }
 
@@ -76,12 +76,12 @@ namespace doodleIRC {
                 var resolver = Resolver.get_default ();
                 var addresses = yield resolver.lookup_by_name_async (this.server_url, null);
                 var address = addresses.nth_data (0);
-                print ("Resolved %s to %s\n".printf (this.server_url, address.to_string ()));
+                debug (("Resolved %s to %s\n".printf (this.server_url, address.to_string ()));
 
                 // Connect
                 var client = new SocketClient ();
                 connection = yield client.connect_async (new InetSocketAddress (address, 6667));
-                print ("Connected to %s\n".printf (this.server_url));
+                debug (("Connected to %s\n".printf (this.server_url));
                 this.connected = true;
                 //response stream
                 response = new DataInputStream (connection.input_stream);
@@ -90,12 +90,12 @@ namespace doodleIRC {
                 var message = "USER %s %s %s :%s\r\n".printf (user.username, user.hostname,
                                                               user.servername, user.realname);
                 raw_send (message);
-                print ("Wrote request USER\n");
+                debug (("Wrote request USER\n");
 
                 // Send NICK request
                 message = "NICK %s\r\n".printf (nick);
                 raw_send (message);
-                print ("Wrote nick request\n");
+                debug (("Wrote nick request\n");
 
                 wait.begin ();
             } catch (Error e) {
@@ -109,7 +109,7 @@ namespace doodleIRC {
                 var line =  yield response.read_line_async ();
                 parse_line (line);
             } catch (Error e) {
-                print ("Error: %s\n".printf (e.message));
+                debug (("Error: %s\n".printf (e.message));
             }
 
             if (connected)
@@ -117,7 +117,7 @@ namespace doodleIRC {
         }
 
         private void parse_line (string line) {
-            print (line + "\n");
+            debug ((line + "\n");
 
             if (line[0] != ':') {
                 process_named_server_message (line);
@@ -146,12 +146,12 @@ namespace doodleIRC {
                         break;
                     }
 
-                    print ("Chan-> "+chan+"\nMSG-> "+msg+"\n");
+                    debug (("Chan-> "+chan+"\nMSG-> "+msg+"\n");
                     on_message (sender, chan, msg);
                     break;
 
                 case "QUIT":
-                    print (" %s has quit\n".printf (sender));
+                    debug ((" %s has quit\n".printf (sender));
                     on_user_quit (chan, sender, msg);
                     break;
 
@@ -160,7 +160,7 @@ namespace doodleIRC {
                         on_join_complete (chan, sender);
                         break;
                     }
-                    print ("User has Joined");
+                    debug (("User has Joined");
                     on_user_join (chan, sender);
                     break;
             }
@@ -172,17 +172,17 @@ namespace doodleIRC {
 
             switch (cmd.up ()) {
                 case "PING":
-                    print ("pinged\n");
+                    debug (("pinged\n");
                     raw_send (line.replace ("PING","PONG"));
                     break;
 
                 case "NOTICE":
-                    print ("Noice: "+msg+"\n");
+                    debug (("Noice: "+msg+"\n");
                     on_notice (msg);
                     break;
 
                 case "ERROR":
-                    print ("An Error Occured: %s\n".printf (msg));
+                    debug (("An Error Occured: %s\n".printf (msg));
                     on_error (msg);
                     break;
             }
@@ -205,7 +205,7 @@ namespace doodleIRC {
                     break;
 
                 case "301":
-                    print ("Away: "+msg);
+                    debug (("Away: "+msg);
                     break;
 
                 case "433": // nick name is use
@@ -270,7 +270,7 @@ namespace doodleIRC {
             // Send JOIN request
             foreach (string chan in chans) {
                 raw_send ("JOIN %s\r\n".printf (chan));
-                print ("Wrote request to join %s\n".printf (chan));
+                debug (("Wrote request to join %s\n".printf (chan));
             }
         }
 
@@ -293,6 +293,10 @@ namespace doodleIRC {
 
         public void write (string chan, string msg) {
             send ("PRIVMSG %s :%s\r\n".printf (chan, msg));
+        }
+
+        public void notice (string to, string text) {
+            send ("NOTICE %s :%s\r\n".printf (to, text));
         }
 
         public void get_names (string chan) {

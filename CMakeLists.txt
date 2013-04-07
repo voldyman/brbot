@@ -54,6 +54,7 @@ vala_precompile(VALA_C
     src/brbot.vala
     src/doodleIRC.vala
     src/Plugins/SaySomething.vala
+    src/Plugins/Memo.vala
 PACKAGES
     gee-1.0
     gio-2.0
